@@ -22,6 +22,9 @@ build:
 build-seed:
 	$(BUILD_CMD) src/Seed
 
+xunit:
+	@cd $(shell pwd)/test/Analyzer.Tests/ && dotnet xunit
+
 publish:
 	dotnet publish -c Release -f net461
 

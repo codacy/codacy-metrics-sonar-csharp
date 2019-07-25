@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<IsPackable>false</IsPackable>
+		<IsTestProject>true</IsTestProject>
+		<TargetFrameworks>net461</TargetFrameworks>
+		<RootNamespace>CodacyCSharp.Metrics.Analyzer.Tests</RootNamespace>
+	</PropertyGroup>
+	<ItemGroup>
+		<DotNetCliToolReference Include="dotnet-mono" Version="0.5.6" />
+		<DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="xunit" Version="2.4.1" />
+		<PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\src\Analyzer\Analyzer.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Remove="Resources\**\*" />
+		<Content Include="Resources\**\*.cs">
+			<Link>src\%(RecursiveDir)%(Filename)%(Extension)</Link>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Resources\**\*.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+</Project>

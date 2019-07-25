@@ -1,9 +1,11 @@
-
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Seed", "src/Seed/Seed.csproj", "{1E1D123E-4E44-4CCE-B05E-04B8D930DC17}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Seed", "src\Seed\Seed.csproj", "{1E1D123E-4E44-4CCE-B05E-04B8D930DC17}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Analyzer", "src/Analyzer/Analyzer.csproj", "{5116209A-3B4A-4F10-8980-29EC95F8E83D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Analyzer", "src\Analyzer\Analyzer.csproj", "{5116209A-3B4A-4F10-8980-29EC95F8E83D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Analyzer.Tests", "test\Analyzer.Tests\Analyzer.Tests.csproj", "{C26314CD-7929-4379-92E1-0381070406F2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,5 +21,9 @@ Global
 		{5116209A-3B4A-4F10-8980-29EC95F8E83D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5116209A-3B4A-4F10-8980-29EC95F8E83D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5116209A-3B4A-4F10-8980-29EC95F8E83D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C26314CD-7929-4379-92E1-0381070406F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C26314CD-7929-4379-92E1-0381070406F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C26314CD-7929-4379-92E1-0381070406F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C26314CD-7929-4379-92E1-0381070406F2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
