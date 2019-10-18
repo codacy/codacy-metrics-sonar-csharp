@@ -9,6 +9,7 @@ RUN apk add --no-cache mono --repository http://dl-cdn.alpinelinux.org/alpine/ed
 
 COPY src/Analyzer/bin/Release/net461/publish/*.dll /opt/docker/bin/
 COPY src/Analyzer/bin/Release/net461/publish/*.exe /opt/docker/bin/
+COPY docs/ /docs/
 
 RUN adduser -u 2004 -D docker
 
