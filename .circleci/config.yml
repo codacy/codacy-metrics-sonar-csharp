@@ -1,7 +1,8 @@
 version: 2.1
 
 orbs:
-  codacy: codacy/base@0.0.13
+  codacy: codacy/base@1.0.0
+  codacy_plugins_test: codacy/plugins-test@0.3.1
 
 jobs:
   build_and_test:
@@ -43,11 +44,11 @@ jobs:
           name: Save docker to file
           command: |
             mkdir -p workspace
-            docker save --output workspace/docker.tar $CIRCLE_PROJECT_REPONAME:latest
+            docker save --output ~/workdir/docker-image.tar $CIRCLE_PROJECT_REPONAME:latest
       - persist_to_workspace:
-          root: workspace
+          root: ~/
           paths:
-            - docker.tar
+            - workdir
   publish:
     machine: true
     working_directory: ~/workdir
@@ -56,7 +57,7 @@ jobs:
           at: ~/
       - run:
           name: Load docker from file
-          command: docker load --input ~/docker.tar
+          command: docker load --input ~/workdir/docker-image.tar
       - deploy:
           name: Push application Docker image
           command: |
@@ -76,13 +77,20 @@ workflows:
       - publish_local:
           requires:
             - build_and_test
+      - codacy_plugins_test/run:
+          name: plugins_test
+          run_metrics_tests: true
+          run_json_tests: false
+          run_pattern_tests: false
+          requires:
+            - publish_local
       - publish:
           context: CodacyDocker
           filters:
             branches:
               only: master
           requires:
-            - publish_local
+            - plugins_test
       - codacy/tag_version:
           name: tag_version
           requires:
