@@ -1,5 +1,4 @@
 export FrameworkPathOverride=$(shell dirname $(shell which mono))/../lib/mono/4.5/
-SONAR_VERSION=$(shell cat .SONAR_VERSION | tr -d '\n')
 BUILD_CMD=dotnet build --no-restore /property:GenerateFullPaths=true
 
 LIBRARIES_FOLDER=.lib
