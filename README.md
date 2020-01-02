@@ -1,3 +1,6 @@
+[![CircleCI](https://circleci.com/gh/codacy/codacy-metrics-sonar-csharp.svg?style=svg)](https://circleci.com/gh/codacy/codacy-metrics-sonar-csharp)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/fc2d4f13d0a742089ad91de44947ca37)](https://www.codacy.com/gh/codacy/codacy-metrics-sonar-csharp?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=codacy/codacy-metrics-sonar-csharp&amp;utm_campaign=Badge_Grade)
+
 # Codacy Metrics support for SonarC#
 
 This is the docker engine we use at Codacy to run [SonarC#](https://github.com/SonarSource/sonar-csharp) developed by SonarSource.
