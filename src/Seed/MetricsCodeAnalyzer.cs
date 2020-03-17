@@ -36,7 +36,7 @@ namespace CodacyCSharp.Metrics.Seed
 
         public async Task Run()
         {
-            var timeoutEnv = Environment.GetEnvironmentVariable("TIMEOUT");
+            var timeoutEnv = Environment.GetEnvironmentVariable("TIMEOUT_SECONDS");
 
             if (timeoutEnv is null)
             {
@@ -60,7 +60,7 @@ namespace CodacyCSharp.Metrics.Seed
                 }
                 catch (Exception e)
                 {
-                    Console.Error.WriteLine($"can't parse 'TIMEOUT' environment variable ({timeoutEnv})");
+                    Console.Error.WriteLine($"can't parse 'TIMEOUT_SECONDS' environment variable ({timeoutEnv})");
                     Logger.Send(e.StackTrace);
                     Environment.Exit(1);
                 }
@@ -71,7 +71,7 @@ namespace CodacyCSharp.Metrics.Seed
         {
             var files = Directory.GetFiles(folder, "*" + fileExtension, SearchOption.AllDirectories);
             return from string entry in files
-                select entry.Substring(entry.IndexOf("/", StringComparison.InvariantCulture) + 1);
+                   select entry.Substring(entry.IndexOf("/", StringComparison.InvariantCulture) + 1);
         }
     }
 }

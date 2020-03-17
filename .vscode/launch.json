@@ -1,24 +1,24 @@
 {
-	"version": "0.2.0",
-	"configurations": [
-		{
-			"name": "Launch CodacyCSharp.Metrics.Analyzer",
-			"type": "mono",
-			"request": "launch",
-			"program": "${workspaceRoot}/src/Analyzer/bin/Debug/net461/Analyzer.exe",
-			"env": {
-				"DEBUG": "true",
-				"TIMEOUT": "15 minutes"
-			},
-			"cwd": "${workspaceRoot}",
-			"preLaunchTask": "CodacyCSharp.Metrics.Analyzer"
-		},
-		{
-			"name": "Attach",
-			"type": "mono",
-			"request": "attach",
-			"address": "localhost",
-			"port": 55555
-		}
-	]
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch CodacyCSharp.Metrics.Analyzer",
+            "type": "mono",
+            "request": "launch",
+            "program": "${workspaceRoot}/src/Analyzer/bin/Debug/net461/Analyzer.exe",
+            "env": {
+                "DEBUG": "true",
+                "TIMEOUT_SECONDS": "900"
+            },
+            "cwd": "${workspaceRoot}",
+            "preLaunchTask": "CodacyCSharp.Metrics.Analyzer"
+        },
+        {
+            "name": "Attach",
+            "type": "mono",
+            "request": "attach",
+            "address": "localhost",
+            "port": 55555
+        }
+    ]
 }
