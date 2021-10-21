@@ -1,4 +1,9 @@
-FROM mcr.microsoft.com/dotnet/sdk:3.1-alpine3.14 AS builder
+FROM mcr.microsoft.com/dotnet/core/sdk:2.2 AS builder
+
+RUN echo "deb http://download.mono-project.com/repo/debian wheezy main" | tee /etc/apt/sources.list.d/mono-xamarin.list && \
+	apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF && \
+	apt-get update && \
+	apt-get install -y mono-complete build-essential nuget unzip
 
 COPY . /workdir
 WORKDIR /workdir
