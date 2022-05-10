@@ -13,7 +13,6 @@ Check the **Docs** section for more information.
 ### Publish the docker
 
 ```bash
-make publish
 docker build . -t codacy-metrics-sonar-csharp:dev
 ```
 
