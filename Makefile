@@ -23,7 +23,7 @@ build-seed:
 
 publish:
 	dotnet restore
-	dotnet publish -c Release -f net461
+	dotnet publish -c Release -f net48
 
 run-tests:
 	dotnet test

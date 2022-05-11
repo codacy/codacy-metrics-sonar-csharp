@@ -28,4 +28,4 @@ RUN make run-tests
 
 RUN adduser -u 2004 --disabled-password docker
 
-ENTRYPOINT [ "mono", "/app/src/Analyzer/bin/Release/net461/publish/Analyzer.exe" ]
+ENTRYPOINT [ "mono", "/app/src/Analyzer/bin/Release/net48/publish/Analyzer.exe" ]
