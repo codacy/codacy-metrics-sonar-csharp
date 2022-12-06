@@ -1,19 +1,23 @@
-ARG MONO_VERSION=6.12.0.122
+ARG UBUNTU_VERSION=20.04
 
-FROM ubuntu:20.04 as builder
+FROM ubuntu:$UBUNTU_VERSION as base
 
-ARG MONO_VERSION
-ENV APT_MONO_VERSION=${MONO_VERSION}-0xamarin1+ubuntu2004b1
+# setup mono repo
+RUN apt -y update && \
+    apt install -y --no-install-recommends gnupg ca-certificates && \
+    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF && \
+    echo "deb https://download.mono-project.com/repo/ubuntu stable-focal main" | tee /etc/apt/sources.list.d/mono-official-stable.list && \
+    apt purge -y --auto-remove gnupg && \
+    apt -y update
+
+
+FROM base as builder
+
 ENV TZ=Europe/Lisbon
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Install complete mono and its dependencies
-RUN apt-get -y update && \
-    apt install -y gnupg ca-certificates && \
-    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF && \
-    echo "deb https://download.mono-project.com/repo/ubuntu stable-focal main" | tee /etc/apt/sources.list.d/mono-official-stable.list && \
-    apt-get -y update && \
-    apt-get -y install mono-complete=${APT_MONO_VERSION} build-essential nuget unzip
+RUN apt -y install mono-complete build-essential unzip
 
 # Install dotnet sdk
 RUN apt-get -y update && \
@@ -30,7 +34,12 @@ WORKDIR /workdir
 RUN make publish
 RUN make run-tests
 
-FROM mono:$MONO_VERSION
+
+FROM base
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends mono-runtime && \
+    rm -rf /var/lib/apt/lists/* /tmp/*
 
 COPY --from=builder /workdir/src/Analyzer/bin/Release/net48/publish/Analyzer.exe /opt/docker/bin/
 COPY --from=builder /workdir/src/Analyzer/bin/Release/net48/publish/*.dll /opt/docker/bin/
