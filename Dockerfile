@@ -1,6 +1,4 @@
-ARG UBUNTU_VERSION=20.04
-
-FROM ubuntu:$UBUNTU_VERSION as base
+FROM ubuntu:20.04 as base
 
 # setup mono repo
 RUN apt -y update && \
@@ -35,14 +33,15 @@ RUN make publish
 RUN make run-tests
 
 
-FROM base
-
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends mono-runtime && \
-    rm -rf /var/lib/apt/lists/* /tmp/*
+FROM alpine:3.17
 
 COPY --from=builder /workdir/src/Analyzer/bin/Release/net48/publish/Analyzer.exe /opt/docker/bin/
 COPY --from=builder /workdir/src/Analyzer/bin/Release/net48/publish/*.dll /opt/docker/bin/
-RUN adduser -u 2004 --disabled-password docker
+
+RUN apk add --no-cache mono --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing &&\
+    apk add --no-cache --virtual=.build-dependencies ca-certificates &&\
+    cert-sync /etc/ssl/certs/ca-certificates.crt &&\
+    apk del .build-dependencies &&\
+    adduser -u 2004 -D docker
 
 ENTRYPOINT [ "mono", "/opt/docker/bin/Analyzer.exe" ]
