@@ -19,6 +19,9 @@ build-seed:
 publish:
 	dotnet publish -c Release -f net6
 
+run:
+	dotnet run --project src/Analyzer -f net6
+
 run-tests:
 	dotnet test
 
