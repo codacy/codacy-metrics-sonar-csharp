@@ -2,7 +2,7 @@
 	<PropertyGroup>
 		<IsPackable>false</IsPackable>
 		<IsTestProject>true</IsTestProject>
-		<TargetFrameworks>net6;net7</TargetFrameworks>
+		<TargetFrameworks>net6</TargetFrameworks>
 		<RootNamespace>CodacyCSharp.Metrics.Analyzer.Tests</RootNamespace>
 	</PropertyGroup>
 	<ItemGroup>
