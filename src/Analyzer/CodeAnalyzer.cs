@@ -49,6 +49,13 @@ namespace CodacyCSharp.Metrics.Analyzer
             // I'm under the impression that LineComplexities is not reported anywhere 
             // and we may not need it anymore anyway. which is good since the api dissapeared.
 
+            result.LineComplexities = Enumerable.Empty<LineComplexity>();
+
+            // we no longer have access to 'ComputeCyclomaticComplexity'
+            // .Complexity is ComputeCognitiveComplexity for the ast tree root.
+            // is this good enough?
+            result.Complexity = metrics.Complexity;
+
             /*result.LineComplexities = metrics.FunctionNodes
                 .GroupBy(row =>
                     row.GetLocation().GetMappedLineSpan().Span.Start.Line + 1
