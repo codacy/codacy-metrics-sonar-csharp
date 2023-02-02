@@ -1,47 +1,30 @@
-FROM ubuntu:20.04 as base
+ARG DOTNET_VERSION=6.0
+ARG DOTNET_BASE_OS=alpine3.17
 
-# setup mono repo
-RUN apt -y update && \
-    apt install -y --no-install-recommends gnupg ca-certificates && \
-    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF && \
-    echo "deb https://download.mono-project.com/repo/ubuntu stable-focal main" | tee /etc/apt/sources.list.d/mono-official-stable.list && \
-    apt purge -y --auto-remove gnupg && \
-    apt -y update
-
-
-FROM base as builder
-
-ENV TZ=Europe/Lisbon
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-
-# Install complete mono and its dependencies
-RUN apt -y install mono-complete build-essential unzip
-
-# Install dotnet sdk
-RUN apt-get -y update && \
-    apt-get install -y apt-transport-https wget make && \
-    wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && \
-    dpkg -i packages-microsoft-prod.deb && \
-    rm packages-microsoft-prod.deb && \
-    apt-get update && \
-    apt-get install -y dotnet-sdk-6.0
+## BUILD IMAGE
+FROM mcr.microsoft.com/dotnet/sdk:$DOTNET_VERSION-$DOTNET_BASE_OS AS builder
 
 COPY . /workdir
 WORKDIR /workdir
 
-RUN make publish
-RUN make run-tests
+RUN apk add --no-cache make &&\
+    make &&\
+    make publish
 
 
-FROM alpine:3.17
+## RUNTIME IMAGE
+FROM mcr.microsoft.com/dotnet/runtime:$DOTNET_VERSION-$DOTNET_BASE_OS
 
-COPY --from=builder /workdir/src/Analyzer/bin/Release/net48/publish/Analyzer.exe /opt/docker/bin/
-COPY --from=builder /workdir/src/Analyzer/bin/Release/net48/publish/*.dll /opt/docker/bin/
+COPY --from=builder /workdir/src/Analyzer/bin/Release/net6/publish/ /opt/docker/bin/
 
-RUN apk add --no-cache mono --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing &&\
-    apk add --no-cache --virtual=.build-dependencies ca-certificates &&\
-    cert-sync /etc/ssl/certs/ca-certificates.crt &&\
-    apk del .build-dependencies &&\
-    adduser -u 2004 -D docker
+# Create NON-ROOT user
+RUN adduser -u 2004 -D docker
 
-ENTRYPOINT [ "mono", "/opt/docker/bin/Analyzer.exe" ]
+# From now on, run as NON-ROOT user
+USER docker
+
+# Disable diagnostics stuff from dotnet that are turned on by default.
+# Should make the image even more "read-only".
+ENV DOTNET_EnableDiagnostics=0
+
+ENTRYPOINT [ "dotnet", "/opt/docker/bin/Analyzer.dll" ]

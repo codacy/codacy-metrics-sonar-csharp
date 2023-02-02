@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  codacy: codacy/base@10.1.0
+  codacy: codacy/base@10.1.1
   codacy_plugins_test: codacy/plugins-test@1.1.1
 
 workflows:
@@ -10,9 +10,9 @@ workflows:
     jobs:
       - codacy/checkout_and_version
       - codacy/shell:
-          name: build_test_publish_local
+          name: publish_local
           cmd: |
-            docker build . -t $CIRCLE_PROJECT_REPONAME:latest
+            docker build -t $CIRCLE_PROJECT_REPONAME:latest .
             docker save --output docker-image.tar $CIRCLE_PROJECT_REPONAME:latest
           persist_to_workspace: true 
           requires:
@@ -23,15 +23,14 @@ workflows:
           run_json_tests: false
           run_pattern_tests: false
           requires:
-            - build_test_publish_local
+            - publish_local
       - codacy/publish_docker:
           context: CodacyDocker
-          requires:
-            - plugins_test
           filters:
             branches:
-              only:
-                - master
+              only: master
+          requires:
+            - plugins_test
       - codacy/tag_version:
           name: tag_version
           context: CodacyAWS
