@@ -46,11 +46,16 @@ namespace CodacyCSharp.Metrics.Analyzer
             result.NrMethods = metrics.FunctionCount;
             result.NrClasses = metrics.ClassCount;
 
-            result.LineComplexities = metrics.FunctionNodes.GroupBy(row =>
-                    row.GetLocation().GetMappedLineSpan().Span.Start.Line + 1)
+            // I'm under the impression that LineComplexities is not reported anywhere 
+            // and we may not need it anymore anyway. which is good since the api dissapeared.
+
+            /*result.LineComplexities = metrics.FunctionNodes
+                .GroupBy(row =>
+                    row.GetLocation().GetMappedLineSpan().Span.Start.Line + 1
+                )
                 .Select(nodeGroup =>
                 {
-                    var lineComplexity = nodeGroup.Max(num => metrics.GetCyclomaticComplexity(num));
+                    var lineComplexity = nodeGroup.Max(num => metrics.ComputeCyclomaticComplexity(num));
                     result.Complexity = Math.Max(result.Complexity, lineComplexity);
                     return new LineComplexity
                     {
@@ -59,7 +64,7 @@ namespace CodacyCSharp.Metrics.Analyzer
                     };
                 })
                 .ToList();
-
+            */
             return result;
         }
     }
