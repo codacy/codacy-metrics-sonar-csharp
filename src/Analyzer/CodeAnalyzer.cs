@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -46,33 +47,45 @@ namespace CodacyCSharp.Metrics.Analyzer
             result.NrMethods = metrics.FunctionCount;
             result.NrClasses = metrics.ClassCount;
 
-            // I'm under the impression that LineComplexities is not reported anywhere 
-            // and we may not need it anymore anyway. which is good since the api dissapeared.
+            var functionMetrics = new CodacyCSharpFunctionMetrics(syntaxTree, semanticModel);
 
-            result.LineComplexities = Enumerable.Empty<LineComplexity>();
+            // total complexity of file is the biggest complexity of the functions in the file.
+            result.LineComplexities = functionMetrics.functionComplexities;
+            result.Complexity = functionMetrics.functionComplexities
+                                    .Select(functionComplexity => functionComplexity.Value)
+                                    .DefaultIfEmpty(0)
+                                    .Max();
 
-            // we no longer have access to 'ComputeCyclomaticComplexity'
-            // .Complexity is ComputeCognitiveComplexity for the ast tree root.
-            // is this good enough?
-            result.Complexity = metrics.Complexity;
+            return result;
+        }
+    }
 
-            /*result.LineComplexities = metrics.FunctionNodes
-                .GroupBy(row =>
-                    row.GetLocation().GetMappedLineSpan().Span.Start.Line + 1
+    // workaround to get stuff only available as protected.
+    public class CodacyCSharpFunctionMetrics : CSharpMetrics
+    {
+        public IEnumerable<LineComplexity> functionComplexities { get; }
+
+        public CodacyCSharpFunctionMetrics(
+            Microsoft.CodeAnalysis.SyntaxTree tree,
+            Microsoft.CodeAnalysis.SemanticModel semanticModel) : base(tree, semanticModel)
+        {
+            // each function found in the file and the cyclomatic complexity of each of those functions
+            this.functionComplexities = tree.GetRoot()
+                .DescendantNodes()
+                .Where(IsFunction)
+                .Select(functionNode =>
+                    (functionNode.GetLocation().GetMappedLineSpan().Span.Start.Line + 1, functionNode)
                 )
-                .Select(nodeGroup =>
+                .Select(lineAndFunctionNode =>
                 {
-                    var lineComplexity = nodeGroup.Max(num => metrics.ComputeCyclomaticComplexity(num));
-                    result.Complexity = Math.Max(result.Complexity, lineComplexity);
+                    (var line, var node) = lineAndFunctionNode;
+
                     return new LineComplexity
                     {
-                        Line = nodeGroup.Key,
-                        Value = lineComplexity
+                        Line = line,
+                        Value = this.ComputeCyclomaticComplexity(node)
                     };
-                })
-                .ToList();
-            */
-            return result;
+                });
         }
     }
 }
